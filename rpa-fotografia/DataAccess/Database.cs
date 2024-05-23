@@ -18,6 +18,7 @@ namespace rpa_fotografia.DataAccess
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
+
                     string query = @"INSERT INTO clientes 
                         (data, NomeFormulario, Link, Nome, SobreNome, CPF, Email, WhatsApp, CEP, Rua, Bairro, Cidade, Estado, Pais, Numero, Complemento) 
                         VALUES (@Data, @NomeFormulario, @Link, @Nome, @SobreNome, @CPF, @Email, @WhatsApp, @CEP, @Rua, @Bairro, @Cidade, @Estado, @Pais, @Numero, @Complemento)
@@ -59,6 +60,9 @@ namespace rpa_fotografia.DataAccess
 
                         return command.ExecuteNonQuery();
                     }
+
+                    connection.Close();
+
                 }
 
             }

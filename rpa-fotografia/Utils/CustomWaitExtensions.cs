@@ -1,10 +1,5 @@
-﻿using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace rpa_fotografia.Utils
 {
@@ -12,27 +7,39 @@ namespace rpa_fotografia.Utils
     {
         public static IWebElement WaitForElementToBeVisible(this IWebDriver driver, By locator, int timeoutInSeconds)
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
-            return wait.Until(driver =>
+            try
             {
-                try
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
+                return wait.Until(driver =>
                 {
-                    var element = driver.FindElement(locator);
-                    if (element.Displayed && element.Enabled)
+                    try
                     {
-                        return element;
+                        var element = driver.FindElement(locator);
+                        if (element.Displayed && element.Enabled)
+                        {
+                            return element;
+                        }
+                        return null;
                     }
-                    return null;
-                }
-                catch (NoSuchElementException)
-                {
-                    return null;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return null;
-                }
-            });
+                    catch (NoSuchElementException)
+                    {
+                        return null;
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        return null;
+                    }
+                });
+            }
+            catch (Exception)
+            {
+
+                driver.Navigate().Refresh();
+                Thread.Sleep(5000);
+                throw;
+
+            }
+
         }
     }
 }

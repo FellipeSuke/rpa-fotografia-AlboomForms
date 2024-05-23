@@ -11,5 +11,6 @@ namespace rpa_fotografia.Automation.WebScraping
         Task NavigateToUrlAsync(string url);
         Task<string> GetPageTitleAsync();
         Task LoginAsync(string email, string password, ConnectionStringsJ host);
+        Task CloseWebDrive();
     }
 }
