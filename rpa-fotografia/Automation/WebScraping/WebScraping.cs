@@ -162,7 +162,7 @@ namespace rpa_fotografia.Automation.WebScraping
                 var respostasForm = _driver.WaitForElementToBeVisible(By.XPath("/html/body/div[2]/div/div/div/div[3]/div[2]/div[2]/div/div[1]/div[1]/div/div/div"), 30);
                 Logger.Log(respostasForm.Text);
                 int quantidadeForm = int.Parse(Regex.Replace(respostasForm.Text, "[^0-9]", ""));
-               // quantidadeForm = 0;
+                //quantidadeForm = 0;
 
                 if (quantidadeForm > 0)
                 {
@@ -178,9 +178,14 @@ namespace rpa_fotografia.Automation.WebScraping
                             Thread.Sleep(5000);
                             var client = _driver.WaitForElementToBeVisible(By.XPath("//*[@id='app-viewport']/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]"), 30);
                             Cliente novoCliente = ColetarInformacoesCliente();
-                            ExecutarColetaInformacoes(host);
-                            var arquivarButton = _driver.WaitForElementToBeVisible(By.XPath("//*[@id=\"app-viewport\"]/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[1]/div[1]"), 30);
-                            arquivarButton.Click();
+                            int linhasAfetadas = ExecutarColetaInformacoes(host, novoCliente);
+                            if (linhasAfetadas >= 1)
+                            {
+                                var arquivarButton = _driver.WaitForElementToBeVisible(By.XPath("//*[@id=\"app-viewport\"]/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[1]/div[1]"), 30);
+                                arquivarButton.Click();
+                                Logger.Log("arquivando formulario de " + novoCliente.Nome + " " + novoCliente.SobreNome);
+                            }
+
                             Thread.Sleep(5000);
                         }
                         catch (Exception ex)
@@ -259,7 +264,7 @@ namespace rpa_fotografia.Automation.WebScraping
                 // Criar uma instância da classe Cliente e atribuir os valores coletados
                 var cliente = new Cliente
                 {
-                    Data = (DateTime)dataBd,
+                    Data = dataBd,
                     NomeFormulario = formulario,
                     Link = link,
                     Nome = nome,
@@ -267,7 +272,7 @@ namespace rpa_fotografia.Automation.WebScraping
                     CPF = Regex.Replace(cpf, "[^0-9]", ""),
                     Email = email,
                     WhatsApp = whatsApp,
-                    CEP = cep,
+                    CEP = Regex.Replace(cep, "[^0-9]", ""),                    
                     Rua = rua,
                     Bairro = bairro,
                     Cidade = cidade,
@@ -287,11 +292,11 @@ namespace rpa_fotografia.Automation.WebScraping
         }
 
         // Exemplo de uso
-        public void ExecutarColetaInformacoes(ConnectionStringsJ host)
+        public int ExecutarColetaInformacoes(ConnectionStringsJ host, Cliente cliente)
         {
             try
             {
-                Cliente cliente = ColetarInformacoesCliente();
+                
                 if (cliente != null)
                 {
                     Logger.Log("Data: " + cliente.Data);
@@ -312,13 +317,17 @@ namespace rpa_fotografia.Automation.WebScraping
 
                     var database = new Database(host);
                     var clienteService = new ClienteService(database);
-                    Logger.Log("Linhas afetadas: " + clienteService.AdicionarCliente(cliente));
+                    
+                    int linhasAfetadas = clienteService.AdicionarCliente(cliente);
+                    Logger.Log("Linhas afetadas: " + linhasAfetadas);
 
+                    return linhasAfetadas;
                 }
+                else { return 0; }
             }
             catch (Exception)
             {
-
+                return -1;
                 throw;
             }
 

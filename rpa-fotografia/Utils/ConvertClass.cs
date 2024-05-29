@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rpa_fotografia.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace rpa_fotografia.Utils
 {
     public class ConvertClass
     {
-        public static DateTime? ConvertToDateTime(string input)
+        public static string ConvertToDateTime(string input)
         {
             // Definindo os meses em português
             string[] months = {
@@ -38,9 +39,10 @@ namespace rpa_fotografia.Utils
 
                 // Criando o DateTime
                 DateTime dateTime = new DateTime(year, month, day, hour, minute, 0);
-
+                string dataFormatted = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                
                 // Retornando no formato desejado
-                return dateTime;
+                return dataFormatted;
             }
             catch (Exception ex)
             {

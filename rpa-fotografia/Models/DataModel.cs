@@ -8,7 +8,7 @@ namespace rpa_fotografia.Models
 {
     public class Cliente
     {
-        public DateTime Data { get; set; }
+        public string Data { get; set; }
         public string NomeFormulario { get; set; }
         public string Link { get; set; }
         public string Nome { get; set; }
